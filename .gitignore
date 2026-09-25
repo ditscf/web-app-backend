@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Compiled output
+dist/
+build/
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# Tests and coverage
+coverage/
+.nyc_output/
+.vitest/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Temp
+.temp/
+.tmp/

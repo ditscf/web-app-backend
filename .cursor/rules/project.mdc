@@ -1,0 +1,44 @@
+---
+alwaysApply: true
+---
+
+# DITSCF-MS Project Rules
+
+## Before Acting
+
+- This folder is the backend project only. Do not add frontend code or a shared workspace.
+- Read `AGENTS.md` before performing project work.
+- Inspect relevant project documentation before making assumptions.
+- Treat `docs/Project BRS.md` and `docs/Project Vision.md` as primary project references.
+- Check existing artifacts before creating new ones.
+
+## Requirements First
+
+- The project is currently technology-agnostic.
+- Do not introduce or assume a technology stack unless explicitly approved.
+- Separate business requirements from technical decisions.
+- Never convert an assumption into a requirement.
+- Clearly identify unknowns, conflicts, and decisions that require team discussion.
+
+## System Design
+
+- Design incrementally from requirements toward implementation.
+- Prefer conceptual models before technical architecture.
+- Keep diagrams and documentation aligned with approved requirements.
+- When generating or modifying an artifact, explain what it represents and what assumptions it depends on.
+
+## MCP
+
+- Use MCP tools when they provide an appropriate capability for the task.
+- Do not invoke MCP tools merely because they are available.
+- Inspect available MCP capabilities before assuming what a tool can do.
+- Treat MCP-generated output as a draft until reviewed and approved.
+- Never fabricate MCP tool results or claim an action was performed when it was not.
+- Record important MCP workflows and decisions under `docs/mcp/`.
+
+## Changes
+
+- Make the smallest appropriate change.
+- Do not modify unrelated files.
+- Preserve existing project decisions and business rules.
+- Verify changes after completing a task.

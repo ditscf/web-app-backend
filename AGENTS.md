@@ -6,7 +6,7 @@ This directory is the DITSCF-MS backend only. It is a separate project from the 
 
 DITSCF-MS is a Fellowship Management System being designed for DITSCF.
 
-The project is currently in the requirements and system-design phase. The technology stack and implementation architecture have not yet been finalized.
+The backend stack in this repository is NestJS, Prisma, and PostgreSQL. Business requirements remain separate from that technical choice.
 
 The project should evolve from documented requirements and team decisions rather than assumptions.
 
@@ -18,6 +18,13 @@ Current primary documents:
 
 - `docs/Project Vision.md`
 - `docs/Project BRS.md`
+- `docs/analysis/requirements-analysis.md` for confirmed V1 business rules
+
+Technical decisions for authentication and identity:
+
+- `docs/design/authentication.md`
+- `docs/design/authorization.md`
+- `docs/design/identity-model.md`
 
 Do not invent requirements, business rules, workflows, actors, or technical constraints that are not supported by project documentation or explicitly approved decisions.
 
@@ -84,6 +91,6 @@ MCP-specific workflows and decisions should be documented under `docs/mcp/`.
 
 ## Current Phase
 
-The project is currently focused on understanding the requirements and developing the first conceptual system design.
+V1 business rules are confirmed. The identity model is in `prisma/schema.prisma`. Passwordless sign-in, sessions, and the origin check are in `src/auth`.
 
-Do not introduce implementation technologies until the project team has discussed and approved the relevant technical decisions.
+Do not add registration, approval, or other member workflows until the task includes them. Do not introduce further implementation technologies until the relevant technical decision is recorded.

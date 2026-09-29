@@ -1,15 +1,300 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Identity, account, session, and assignment model.
+// Decisions: docs/design/identity-model.md
 
 generator client {
-  provider            = "prisma-client"
-  output              = "../generated/prisma"
-  moduleFormat        = "cjs"
-  importFileExtension = ""
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum ApplicationStatus {
+  PENDING
+  EXPIRED
+  APPROVED
+}
+
+enum ApprovalStep {
+  GENERAL_SECRETARY
+  VICE_GENERAL_SECRETARY
+}
+
+enum MembershipStatus {
+  ACTIVE
+  ASSOCIATE
+}
+
+enum AccountStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum AuthEmailType {
+  LOGIN_CODE
+  ACTIVATION
+}
+
+enum AuthEmailStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum FellowshipYearStatus {
+  OPEN
+  CLOSED
+  ARCHIVED
+}
+
+enum FellowshipOffice {
+  CHAIRMAN
+  VICE_CHAIRMAN
+  GENERAL_SECRETARY
+  VICE_GENERAL_SECRETARY
+  TREASURER
+}
+
+enum EventStatus {
+  ACTIVE
+  CLOSED
+  ARCHIVED
+}
+
+enum EventRole {
+  EVENT_CHAIRMAN
+  EVENT_TREASURER
+  EVENT_SECRETARY
+}
+
+/// Stable fellowship identity. Email is the unique identifier and is stored lowercase.
+model Person {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  email       String   @unique
+  firstName   String
+  lastName    String
+  phone       String
+  /// Registration field "class".
+  studyClass  String
+  course      String
+  yearOfStudy String
+  dateOfBirth DateTime @db.Date
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  applications         Application[]
+  approvalDecisions    ApplicationDecision[]
+  membership           Membership?
+  account              Account?
+  authEmails           AuthEmail[]
+  officeAssignments    FellowshipOfficeAssignment[]
+  ministryLeadership   MinistryLeaderAssignment[]
+  eventRoleAssignments EventRoleAssignment[]
+}
+
+/// One registration attempt. Pending lasts until expiresAt, which is 48 hours after submittedAt.
+model Application {
+  id          String            @id @default(uuid(7)) @db.Uuid
+  personId    String            @db.Uuid
+  person      Person            @relation(fields: [personId], references: [id], onDelete: Restrict)
+  status      ApplicationStatus
+  submittedAt DateTime
+  expiresAt   DateTime
+  approvedAt  DateTime?
+  expiredAt   DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  decisions  ApplicationDecision[]
+  membership Membership?
+
+  @@unique([personId], map: "application_one_pending_per_person", where: raw("status = 'PENDING'::\"ApplicationStatus\""))
+  @@index([personId])
+  @@index([expiresAt])
+}
+
+/// One required approval step. Both steps must exist, and the approvers must differ.
+model ApplicationDecision {
+  id               String       @id @default(uuid(7)) @db.Uuid
+  applicationId    String       @db.Uuid
+  application      Application  @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  step             ApprovalStep
+  approverPersonId String       @db.Uuid
+  approver         Person       @relation(fields: [approverPersonId], references: [id], onDelete: Restrict)
+  decidedAt        DateTime     @default(now())
+
+  @@unique([applicationId, step])
+  @@unique([applicationId, approverPersonId])
+  @@index([approverPersonId])
+}
+
+/// Fellowship membership. Created only when an application is approved. Holds the Fellowship ID.
+model Membership {
+  id            String           @id @default(uuid(7)) @db.Uuid
+  personId      String           @unique @db.Uuid
+  person        Person           @relation(fields: [personId], references: [id], onDelete: Restrict)
+  applicationId String           @unique @db.Uuid
+  application   Application      @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  status        MembershipStatus
+  fellowshipId  String           @unique
+  activatedAt   DateTime
+  associateAt   DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+/// Right to attempt sign-in. Created when membership becomes Active. No password material.
+model Account {
+  id         String        @id @default(uuid(7)) @db.Uuid
+  personId   String        @unique @db.Uuid
+  person     Person        @relation(fields: [personId], references: [id], onDelete: Restrict)
+  status     AccountStatus
+  disabledAt DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  sessions   Session[]
+  loginCodes LoginCode[]
+  authEmails AuthEmail[]
+}
+
+/// Server session. The cookie value is stored only as a hash and identifies this account.
+model Session {
+  id         String    @id @default(uuid(7)) @db.Uuid
+  accountId  String    @db.Uuid
+  account    Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  lastSeenAt DateTime?
+  ipAddress  String?
+  userAgent  String?
+
+  @@index([accountId])
+}
+
+/// One-time email login code. codeHash is an HMAC, never the plaintext code.
+model LoginCode {
+  id           String    @id @default(uuid(7)) @db.Uuid
+  accountId    String    @db.Uuid
+  account      Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  codeHash     String    @unique
+  expiresAt    DateTime
+  consumedAt   DateTime?
+  attemptCount Int       @default(0)
+  createdAt    DateTime  @default(now())
+
+  @@index([accountId])
+}
+
+/// Delivery record for an authentication email. Does not store the code or the message body.
+model AuthEmail {
+  id                String          @id @default(uuid(7)) @db.Uuid
+  personId          String          @db.Uuid
+  person            Person          @relation(fields: [personId], references: [id], onDelete: Restrict)
+  accountId         String?         @db.Uuid
+  account           Account?        @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  type              AuthEmailType
+  toEmail           String
+  providerMessageId String?
+  status            AuthEmailStatus
+  sentAt            DateTime?
+  createdAt         DateTime        @default(now())
+
+  @@index([personId, type])
+  @@index([accountId])
+}
+
+/// Fellowship year. operativeSlot is 1 while OPEN or CLOSED, and null when ARCHIVED.
+/// The unique slot allows only one operative year.
+model FellowshipYear {
+  id            String               @id @default(uuid(7)) @db.Uuid
+  label         String               @unique
+  status        FellowshipYearStatus
+  operativeSlot Int?                 @unique
+  startedAt     DateTime?
+  closedAt      DateTime?
+  archivedAt    DateTime?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  officeAssignments FellowshipOfficeAssignment[]
+  events            Event[]
+}
+
+/// Year-bound fellowship office. A null effectiveTo means the current holder for that year.
+model FellowshipOfficeAssignment {
+  id               String           @id @default(uuid(7)) @db.Uuid
+  personId         String           @db.Uuid
+  person           Person           @relation(fields: [personId], references: [id], onDelete: Restrict)
+  fellowshipYearId String           @db.Uuid
+  fellowshipYear   FellowshipYear   @relation(fields: [fellowshipYearId], references: [id], onDelete: Restrict)
+  office           FellowshipOffice
+  effectiveFrom    DateTime
+  effectiveTo      DateTime?
+  createdAt        DateTime         @default(now())
+
+  @@unique([fellowshipYearId, office], map: "fellowship_office_one_current_holder", where: raw("\"effectiveTo\" IS NULL"))
+  @@unique([fellowshipYearId, personId], map: "fellowship_office_gs_vgs_distinct_person", where: raw("\"effectiveTo\" IS NULL AND office IN ('GENERAL_SECRETARY'::\"FellowshipOffice\", 'VICE_GENERAL_SECRETARY'::\"FellowshipOffice\")"))
+  @@index([personId])
+  @@index([fellowshipYearId])
+}
+
+/// Predefined ministry. V1 does not create or delete these through the product.
+model Ministry {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leadership MinistryLeaderAssignment[]
+}
+
+/// Ministry-scoped leadership. Not a fellowship-year office. A null effectiveTo means the current leader.
+model MinistryLeaderAssignment {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  personId      String    @db.Uuid
+  person        Person    @relation(fields: [personId], references: [id], onDelete: Restrict)
+  ministryId    String    @db.Uuid
+  ministry      Ministry  @relation(fields: [ministryId], references: [id], onDelete: Restrict)
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@unique([ministryId], map: "ministry_one_current_leader", where: raw("\"effectiveTo\" IS NULL"))
+  @@index([personId])
+}
+
+/// Event parent for event-scoped roles. Operational event fields are added with Event Management.
+model Event {
+  id               String         @id @default(uuid(7)) @db.Uuid
+  fellowshipYearId String         @db.Uuid
+  fellowshipYear   FellowshipYear @relation(fields: [fellowshipYearId], references: [id], onDelete: Restrict)
+  name             String
+  status           EventStatus
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  roleAssignments EventRoleAssignment[]
+
+  @@index([fellowshipYearId])
+}
+
+/// Event-scoped responsibility. A null effectiveTo means the current holder of that role.
+model EventRoleAssignment {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  personId      String    @db.Uuid
+  person        Person    @relation(fields: [personId], references: [id], onDelete: Restrict)
+  eventId       String    @db.Uuid
+  event         Event     @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  role          EventRole
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@unique([eventId, role], map: "event_role_one_current_holder", where: raw("\"effectiveTo\" IS NULL"))
+  @@index([personId])
 }

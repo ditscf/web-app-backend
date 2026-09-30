@@ -10,6 +10,8 @@
     "deploy": "nest deploy",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "clear-db": "ts-node scripts/clear-db.ts",
+    "seed:ministries": "ts-node scripts/seed-ministries.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",

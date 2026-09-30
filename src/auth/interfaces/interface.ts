@@ -1,4 +1,4 @@
 export interface LoginRequestContext {
-    ipAddress?: string;
-    userAgent?: string;
+  ipAddress?: string;
+  userAgent?: string;
 }

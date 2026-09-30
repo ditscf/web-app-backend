@@ -17,6 +17,7 @@ export interface ActorProfile {
   lastName: string;
   membershipStatus: MembershipStatus;
   fellowshipId: string;
+  onboardingCompleted: boolean;
   offices: FellowshipOffice[];
   ministryIds: string[];
   eventRoles: ActorEventRole[];

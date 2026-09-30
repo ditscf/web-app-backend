@@ -204,6 +204,7 @@ describe("AuthService", () => {
         accountId: "account-1",
         personId: "person-1",
         fellowshipId: "DIT-1",
+        onboardingCompleted: false,
         offices: ["CHAIRMAN"],
       }),
     );
@@ -274,6 +275,7 @@ function actorAccount(
       membership: {
         status: input.membershipStatus,
         fellowshipId: "DIT-1",
+        onboardedAt: null,
       },
       officeAssignments: [{ office: "CHAIRMAN" }],
       ministryLeadership: [{ ministryId: "ministry-1" }],

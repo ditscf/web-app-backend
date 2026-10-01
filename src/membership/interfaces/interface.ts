@@ -25,3 +25,8 @@ export interface PendingApplicationView {
         dateOfBirth: string;
     };
 }
+
+export interface OnboardingResult {
+    onboardingCompleted: true;
+    ministries: { id: string; name: string }[];
+}

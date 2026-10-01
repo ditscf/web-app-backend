@@ -10,8 +10,8 @@
     "deploy": "nest deploy",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "clear-db": "ts-node scripts/clear-db.ts",
-    "seed:ministries": "ts-node scripts/seed-ministries.ts",
+    "clear-db": "tsx scripts/clear-db.ts",
+    "seed:ministries": "tsx scripts/seed-ministries.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/src/main",
@@ -20,7 +20,8 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.mts"
+    "test:e2e": "vitest run --config ./vitest.config.e2e.mts",
+    "open-year": "tsx scripts/open-fellowship-year.ts"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

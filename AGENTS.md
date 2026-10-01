@@ -95,6 +95,6 @@ MCP-specific workflows and decisions should be documented under `docs/mcp/`.
 
 ## Current Phase
 
-V1 business rules are confirmed. The identity model is in `prisma/schema.prisma`. Passwordless sign-in, sessions, and the origin check are in `src/auth`. Registration, the two approval steps, and first-login onboarding are in `src/membership`. The ministry list is in `src/ministry`, and the predefined ministries are loaded by `prisma/seed.ts`.
+V1 business rules are confirmed. The identity model is in `prisma/schema.prisma`. Passwordless sign-in, sessions, and the origin check are in `src/auth`. Registration, the two approval steps, and first-login onboarding are in `src/membership`. The ministry list is in `src/ministries`. Local scripts are in `scripts/`: `seed:ministries`, `clear-db`, and `open-year` for a fellowship year and its five officers (logic in `src/fellowship-years`).
 
-Do not add the operator script, profile editing, ministry leader workflows, or event workflows until the task includes them. Do not introduce further implementation technologies until the relevant technical decision is recorded.
+Do not add profile editing, ministry leader workflows, or event workflows until the task includes them. Do not introduce further implementation technologies until the relevant technical decision is recorded.

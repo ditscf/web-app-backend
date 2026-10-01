@@ -11,7 +11,7 @@ Business rule, from `docs/analysis/requirements-analysis.md`: during onboarding 
 
 ## Ministries that exist before anyone signs in
 
-The predefined ministries are reference data, loaded by `npx prisma db seed` (`prisma/seed.ts`). The seed can be run again safely. It adds missing names and does not change or remove existing rows. It does not wait for the officers' details.
+The predefined ministries are reference data, loaded by `npm run seed:ministries` (`scripts/seed-ministries.ts`). The seed can be run again safely. It adds missing names and does not change or remove existing rows. It does not wait for the officers' details.
 
 V1 list:
 
@@ -31,9 +31,9 @@ Member signs in with a login code
         ↓
 GET /api/v1/auth/me returns onboardingCompleted: false
         ↓
-GET /api/v1/ministries fills the dropdown
+GET /api/v1/ministries/list fills the dropdown
         ↓
-POST /api/v1/onboarding { "ministryIds": [...] }
+POST /api/v1/onboarding/complete { "ministryIds": [...] }
         ↓
 Ministry memberships are saved, Membership.onboardedAt is set
         ↓

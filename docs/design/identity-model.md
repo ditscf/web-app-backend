@@ -52,7 +52,7 @@ The first year and its officers are created by the operator script described in 
 
 ## Ministry and event scope
 
-`Ministry` and `Event` exist so leadership assignments have real parents. Ministry names are predefined seed data loaded by `npx prisma db seed`. Event venue, participants, and event finance are not in this schema.
+`Ministry` and `Event` exist so leadership assignments have real parents. Ministry names are predefined seed data loaded by `npm run seed:ministries`. Event venue, participants, and event finance are not in this schema.
 
 `MinistryMembership` rows are first created by onboarding. A null `effectiveTo` is current. A partial unique index allows one current row per person and ministry. `Membership.onboardedAt` records that onboarding was submitted. After that, the member cannot change their own ministries. See `docs/design/onboarding.md`.
 

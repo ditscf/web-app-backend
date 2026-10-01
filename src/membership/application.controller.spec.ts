@@ -73,7 +73,7 @@ describe("ApplicationController", () => {
 
   it("rejects a registration that includes a password", async () => {
     await request(app.getHttpServer())
-      .post("/api/v1/applications")
+      .post("/api/v1/applications/new")
       .set("Origin", "http://localhost:3000")
       .send({ ...registration, password: "secret" })
       .expect(400);
@@ -83,7 +83,7 @@ describe("ApplicationController", () => {
 
   it("rejects a registration from an unknown origin", async () => {
     await request(app.getHttpServer())
-      .post("/api/v1/applications")
+      .post("/api/v1/applications/new")
       .set("Origin", "https://evil.example")
       .send(registration)
       .expect(403);
@@ -111,7 +111,7 @@ describe("ApplicationController", () => {
     });
 
     await request(app.getHttpServer())
-      .get("/api/v1/applications")
+      .get("/api/v1/applications/list")
       .set("Cookie", "ditscf.session=session-token")
       .expect(403);
 
@@ -128,7 +128,7 @@ describe("ApplicationController", () => {
     applications.listPending.mockResolvedValue({ applications: [] });
 
     await request(app.getHttpServer())
-      .get("/api/v1/applications")
+      .get("/api/v1/applications/list")
       .set("Cookie", "ditscf.session=session-token")
       .expect(200, { applications: [] });
   });

@@ -52,3 +52,6 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+
+# Real officer data for the open-year script
+/scripts/data/*.local.json

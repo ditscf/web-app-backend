@@ -91,6 +91,7 @@ model Person {
   authEmails           AuthEmail[]
   officeAssignments    FellowshipOfficeAssignment[]
   ministryLeadership   MinistryLeaderAssignment[]
+  ministryMemberships  MinistryMembership[]
   eventRoleAssignments EventRoleAssignment[]
 }
 
@@ -140,6 +141,8 @@ model Membership {
   status        MembershipStatus
   fellowshipId  String           @unique
   activatedAt   DateTime
+  /// Set once when the member submits first-login onboarding. Ministry selection is final after this.
+  onboardedAt   DateTime?
   associateAt   DateTime?
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
@@ -211,15 +214,17 @@ model AuthEmail {
 /// Fellowship year. operativeSlot is 1 while OPEN or CLOSED, and null when ARCHIVED.
 /// The unique slot allows only one operative year.
 model FellowshipYear {
-  id            String               @id @default(uuid(7)) @db.Uuid
-  label         String               @unique
-  status        FellowshipYearStatus
-  operativeSlot Int?                 @unique
-  startedAt     DateTime?
-  closedAt      DateTime?
-  archivedAt    DateTime?
-  createdAt     DateTime             @default(now())
-  updatedAt     DateTime             @updatedAt
+  id                     String               @id @default(uuid(7)) @db.Uuid
+  label                  String               @unique
+  status                 FellowshipYearStatus
+  operativeSlot          Int?                 @unique
+  /// Last sequence issued for Fellowship IDs in this year. The next ID uses this value plus one.
+  lastIssuedMemberNumber Int                  @default(0)
+  startedAt              DateTime?
+  closedAt               DateTime?
+  archivedAt             DateTime?
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
 
   officeAssignments FellowshipOfficeAssignment[]
   events            Event[]
@@ -251,6 +256,22 @@ model Ministry {
   updatedAt DateTime @updatedAt
 
   leadership MinistryLeaderAssignment[]
+  members    MinistryMembership[]
+}
+
+/// A person's participation in one ministry. A null effectiveTo means current. Ended rows are history.
+model MinistryMembership {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  personId      String    @db.Uuid
+  person        Person    @relation(fields: [personId], references: [id], onDelete: Restrict)
+  ministryId    String    @db.Uuid
+  ministry      Ministry  @relation(fields: [ministryId], references: [id], onDelete: Restrict)
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@unique([personId, ministryId], map: "ministry_membership_one_current", where: raw("\"effectiveTo\" IS NULL"))
+  @@index([ministryId])
 }
 
 /// Ministry-scoped leadership. Not a fellowship-year office. A null effectiveTo means the current leader.

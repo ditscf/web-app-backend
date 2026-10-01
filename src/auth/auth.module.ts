@@ -28,6 +28,6 @@ import { ResendAuthEmailSender } from "./utils/resend-auth-email.sender";
       useClass: OriginGuard,
     },
   ],
-  exports: [AuthService, AUTH_CONFIG],
+  exports: [AuthService, AUTH_CONFIG, AuthEmailSender],
 })
 export class AuthModule {}

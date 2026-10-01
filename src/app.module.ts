@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { createObserveModule } from "@nestjs/observe";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
+import { AuthorizationModule } from "./authorization/authorization.module";
 import { DatabaseModule } from "./database/database.module";
-import { HealthModule } from './health/health.module';
+import { HealthModule } from "./health/health.module";
+import { MembershipModule } from "./membership/membership.module";
+import { MinistryModule } from "./ministries/ministry.module";
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -19,9 +20,10 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     }),
     DatabaseModule,
     AuthModule,
+    AuthorizationModule,
+    MembershipModule,
+    MinistryModule,
     HealthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule { }

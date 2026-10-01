@@ -36,7 +36,8 @@ The policy is called by application services. Controllers validate and forward t
 
 ### Actions that must not be collapsed
 
-- General Secretary approval and Vice General Secretary approval are different actions. Both are required. The same person cannot record both.
+- General Secretary approval and Vice General Secretary approval are different actions. Both are required. The same person cannot record both. The General Secretary's step is recorded first. Reviewing the pending queue is a separate action for those two officers while the year is open or closed.
+- Completing onboarding is the member's own one-time action. It is refused for another person and refused once `onboardedAt` is set. Member routes other than `/auth/me`, the ministry list, and onboarding also check that onboarding is complete.
 - The General Secretary requests fellowship-year closure. The Chairman confirms it. The year does not close by itself.
 - The Event Chairman requests graduation. The Chairman confirms it. Confirmation is what changes an Active Member to an Associate.
 
@@ -51,6 +52,8 @@ The backend decision is authoritative. A client-supplied person id is never trea
 Fellowship offices belong to one fellowship year and are kept after the year is archived. Ministry leadership belongs to a ministry. Event roles belong to one event. Current authorization uses the single operative year, the year that is `OPEN` or `CLOSED`.
 
 Officers are elected outside the system. V1 stores the result. It does not implement an election.
+
+A later super admin is a separate account, checked at the start of the policy before any office rule. This delivery does not include that account. It is not modeled as Chairman, and it is not encoded in the Fellowship ID.
 
 ## Consequences
 

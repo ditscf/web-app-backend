@@ -54,12 +54,12 @@ Every authorized request reads current membership and assignments from the datab
 
 Sign-in is implemented in `src/auth`.
 
-- `POST /auth/login/request` accepts an email and, when that account can sign in, sends a 6-digit code through Resend. The response is the same when the email cannot sign in.
-- `POST /auth/login/verify` checks the code, stores a hashed session, and sets the `httpOnly` cookie. The token is not in the response body.
-- `POST /auth/logout` revokes that session and clears the cookie.
-- `GET /auth/me` returns the current person, membership, and current assignments. It does not grant those assignments by itself.
+- `POST /api/v1/auth/login` accepts an email and, when that account can sign in, sends a 6-digit code through Resend. The response is the same when the email cannot sign in.
+- `POST /api/v1/auth/login/verify` checks the code, stores a hashed session, and sets the `httpOnly` cookie. The token is not in the response body.
+- `POST /api/v1/auth/logout` revokes that session and clears the cookie.
+- `GET /api/v1/auth/me` returns the current person, membership, and current assignments. It does not grant those assignments by itself.
 
-Unsafe requests must send an `Origin` equal to `FRONTEND_ORIGIN`. CORS allows that origin with credentials. Names and defaults are in `.env.example`. Activation email is still sent by the later approval step, not by these routes.
+Unsafe requests must send an `Origin` equal to `FRONTEND_ORIGIN`. CORS allows that origin with credentials. Names and defaults are in `.env.example`. The activation email is sent when the Vice General Secretary completes approval. That email does not create a session.
 
 ## Effect on later modules
 

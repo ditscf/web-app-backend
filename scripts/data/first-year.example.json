@@ -1,0 +1,60 @@
+{
+  "year_label": "2026/2027",
+  "officers": [
+    {
+      "office": "CHAIRMAN",
+      "email": "aishamushi@gmail.com",
+      "first_name": "Aisha",
+      "last_name": "Mushi",
+      "phone": "+255 712 345 678",
+      "class": "Bachelor Degree",
+      "course": "Computer Engineering",
+      "year_of_study": "2025/2026",
+      "date_of_birth": "2004-03-14"
+    },
+    {
+      "office": "VICE_CHAIRMAN",
+      "email": "jamesmwakasege@gmail.com",
+      "first_name": "James",
+      "last_name": "Mwakasege",
+      "phone": "+255 713 456 789",
+      "class": "Ordinary Diploma",
+      "course": "Electrical Engineering",
+      "year_of_study": "2025/2026",
+      "date_of_birth": "2003-11-22"
+    },
+    {
+      "office": "GENERAL_SECRETARY",
+      "email": "fatumahassan@gmail.com",
+      "first_name": "Fatuma",
+      "last_name": "Hassan",
+      "phone": "+255 714 567 890",
+      "class": "Bachelor Degree",
+      "course": "Electronics and Telecommunications Engineering",
+      "year_of_study": "2026/2027",
+      "date_of_birth": "2005-07-08"
+    },
+    {
+      "office": "VICE_GENERAL_SECRETARY",
+      "email": "davidkimaro@gmail.com",
+      "first_name": "David",
+      "last_name": "Kimaro",
+      "phone": "+255 715 678 901",
+      "class": "Masters Degree",
+      "course": "Civil Engineering",
+      "year_of_study": "2024/2025",
+      "date_of_birth": "1998-09-30"
+    },
+    {
+      "office": "TREASURER",
+      "email": "gracenkwabi@gmail.com",
+      "first_name": "Grace",
+      "last_name": "Nkwabi",
+      "phone": "+255 716 789 012",
+      "class": "Bachelor Degree",
+      "course": "Mechanical Engineering",
+      "year_of_study": "2026/2027",
+      "date_of_birth": "2004-01-19"
+    }
+  ]
+}

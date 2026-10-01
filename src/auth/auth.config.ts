@@ -42,7 +42,9 @@ export function loadAuthConfig(configService: ConfigService): AuthConfig {
     "COOKIE_SECURE",
   );
   if (cookieSameSite === "none" && !cookieSecure) {
-    throw new Error("COOKIE_SECURE must be true when COOKIE_SAME_SITE is none.");
+    throw new Error(
+      "COOKIE_SECURE must be true when COOKIE_SAME_SITE is none.",
+    );
   }
 
   return {
@@ -67,7 +69,8 @@ export function loadAuthConfig(configService: ConfigService): AuthConfig {
       5,
       "MAX_CODE_ATTEMPTS",
     ),
-    cookieName: configService.get<string>("COOKIE_NAME")?.trim() || "ditscf.session",
+    cookieName:
+      configService.get<string>("COOKIE_NAME")?.trim() || "ditscf.session",
     cookieSecure,
     cookieSameSite,
     frontendOrigin: readOrigin(required(configService, "FRONTEND_ORIGIN")),

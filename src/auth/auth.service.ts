@@ -79,8 +79,6 @@ export interface VerifiedLogin {
   actor: ActorProfile;
 }
 
-
-
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -338,6 +336,7 @@ function toActor(account: AccountWithActor | null): ActorProfile | null {
     lastName: account.person.lastName,
     membershipStatus: membership.status,
     fellowshipId: membership.fellowshipId,
+    onboardingCompleted: membership.onboardedAt !== null,
     offices: account.person.officeAssignments.map(
       (assignment) => assignment.office,
     ),

@@ -78,7 +78,7 @@ describe("AuthController", () => {
 
   it("rejects a login request from an unknown origin", async () => {
     await request(app.getHttpServer())
-      .post("/api/v1/auth/login/request")
+      .post("/api/v1/auth/login")
       .set("Origin", "https://evil.example")
       .send({ email: "member@example.com" })
       .expect(403);
@@ -88,7 +88,7 @@ describe("AuthController", () => {
 
   it("rejects a login request before the service when the email is invalid", async () => {
     await request(app.getHttpServer())
-      .post("/api/v1/auth/login/request")
+      .post("/api/v1/auth/login")
       .set("Origin", "http://localhost:3000")
       .send({ email: "not-an-email" })
       .expect(400);
